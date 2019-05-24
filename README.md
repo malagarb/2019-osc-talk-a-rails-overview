@@ -419,7 +419,7 @@ BACK TO THE SLIDES
 
 
 
-
+CUT HERE, 45 MINUTES ONLY
 
 
 
@@ -613,12 +613,3 @@ end
 
 
 
-dhh says: el hecho de poder hacer skip sobre componentes quiere decir no estan acoplados
-
-
-To apply a template, you need to provide the Rails generator with the location of the template you wish to apply using the -m option. This can either be a path to a file or a URL.
-
-
-```bash
-
-```
