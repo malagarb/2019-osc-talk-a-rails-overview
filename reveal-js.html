@@ -1,0 +1,859 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Ruby on Rails an Overview from install to deploy in Heroku</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css">
+		<!-- <link rel="stylesheet" href="css/theme/moon.css"> -->
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+		<style>
+			.text-center {text-align:center;}
+			.text-left {text-align:left;}
+			.text-right {text-align:right;}
+
+			.ml {margin-left:5rem;}
+			.ml2x {margin-left:10rem;}
+
+			h1{font-size:1.5em;}
+
+			html.img-right div.slide-background.present {
+				background-position: right;
+			}
+
+			.left {
+				left:-8.33%;
+				text-align: left;
+				float: left;
+				width:50%;
+				z-index:-10;
+			}
+
+			.right {
+				left:31.25%;
+				top: 75px;
+				float: right;
+				text-align: right;
+				z-index:-10;
+				width:50%;
+			}
+
+			.emoji {width: 40px;height: 40px;}
+			.emoji-2x {width: 80px;height: 80px;}
+
+			ul.list-style-none li {list-style: none;}
+
+		</style>
+
+		<link rel="stylesheet" href="css/customization.css">
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides" style="">
+
+				<section>
+						<img class="background-none border-none" src="./resources/another-talks.png" alt="" height="600px">
+				</section>
+
+				<section>
+					<img class="background-none border-none" src="./resources/logo-RubyOnRails.png" alt="" width="1060px" height="400px">
+					<h1>
+						<small>An overview of Ruby on Rails</small>
+					</h1>
+					<p>A talk for Open South of Code 2019 </p>
+					<p>25 may at 11:30</p>
+					<p>by @stbnrivas</p>
+					<aside class="notes">
+						<ul>
+							<li>muchas gracias por asistir</li>
+							<li>vamos a empezar ya en 45 minutos tenemos mucho terreno que cubrir y poco tiempo para hacerlo</li>
+							<li>
+								mi idea para esta charla es: mostrar un poco el flujo de trabajo
+								dentro de una aplicacion de rails y ver que herramientas o componentes
+								existen dentro del framework
+							</li>
+							<li>
+							para romper un poco el hielo quienes de aqui usan el rails como parte de su stack?
+							</li>
+							<li>
+							quienes son de otro stack como php, python, go.
+							Sed bienvenidos
+							porque yo tambien voy a charlas de otros stacks y quiero que os sintais como en casa
+							</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/andalucia.onruby.eu.png" alt="" width="900px">
+					<p>
+						<a href="andalucia.onruby.eu"></a>
+					</p>
+					<aside class="notes">
+					Voy a empezar con la cuña publicitaria, por si alquien tiene interes en ruby, tenemos un
+					grupo de meetup y hacemos presentaciones, si estais interesados podeis preguntarme despues
+					de la charla. <br> <br>
+
+					Ahora si vamos con Ruby on Rails.
+					</aside>
+				</section>
+
+				<section>
+					<section>
+						<img src="./resources/dhh.jpg" alt="" height="160px">
+					<p>
+						<a href="https://rubyonrails.org/doctrine/">Ruby on Rails Doctrine</a>
+						<ul>
+							<li> 1. Optimize for programmer happiness</li>
+							<li> 2. Convention over Configuration</li>
+							<li> 3. The menu is omakase</li>
+							<li> 4. No one paradigm</li>
+							<li> 5. Exalt beautiful code</li>
+							<li> 6. Provide sharp knives</li>
+							<li> 7. Value integrated systems</li>
+							<li> 8. Progress over stability</li>
+							<li> 9. Push up a big tent</li>
+						</ul>
+					</p>
+					<aside class="notes">
+						Esa lista de preceptos de ahi representa la filosofia que dhh quiere transmitir dentro de rails<br><br>
+
+						1. optimizado para programadores<br><br>
+						 heredado de directamente ruby<br><br>
+
+						2. convencion sobre configuracion.<br><br>
+
+						claramente rails esta lleno de componentes y nadie quiere tener que configurarlo todo, tu
+						esperas que todo funcione out of the box, asi que tomamos unas convenciones en pos de la productividad de la mayoria.
+						y si no te sirven tendras que reconfigurarlos, claramente este sera el menor de los casos <br><br>
+
+						3. the menu is omasake<br><br>
+
+						este es un poco matizar el anterior, omasake es una palabra japonesa usada para el llamar a camarero.
+						cuando uno no tiene ni idea de que pedir en un restaurante nuevo  lo mejor es dejarte guiar por el chef<br><br>
+
+						4. Ningun paradigma,<br><br>
+
+						rails no tiene apego por seguir ningun paradigma de manera pura, es mas bien un monton de
+						ideas de diferentes paradigmas. rails no es como una pieza confeccionada con un unico tipo de tela y tijera,
+						sino es mas bien una pieza de ropa con diferentes tipos telas, cortes, uniones incluso pegamento<br><br>
+
+						Por ejemplo: en el PHP old school sin framework la idea es construir un monton de funciones que eran llamadas para conseguir cosas. 
+						Bien a @dhh esto le parece bien, pero usa Orientacion a objetos para agrupar las funciones en el namespaces correcto. 
+						Esto ocurre en los helpers de rails<br><br>
+
+						El precio que hay que pagar por ello es que necesitas conocer OOP or procedural  y funcional y todas ellas interactuan entre si...
+
+						esto permite que a veces puedas no escribir ruby y hacer SQL o Javascript directamente<br><br>
+
+						5. Exalt beautiful code <br><br>
+
+						nosotros no solo escribimos codigo para ordenadores y otros programadores. El codigo esteticamente agradable tiene valor
+						en si mismo y debe ser perseguido, esto no quiere decir que el codigo bonito supere a otras preocupaciones pero si
+						que debe tener su lugar <br><br>
+
+						CREO QUE TENGO UNA TRANSPARENCIA QUE NOS LO MUESTRA<br><br>
+
+						6. Dar herramientas afiladas, como el monkey patching que nos permite cambiar clases y metodos ya existentes.
+						este poder ha sido tanto ridiculizado como evitado por que podia usarse para construir todo tipo de calamidades
+						y se hacia hincapie en que usasemos cucharas, para no hacernos daño. Pero a veces no puedes cortar tomates con una cuchara.
+						Esto no evita el peligro de cortarte un dedo...<br><br>
+
+						Pero la otra cara del monkey patching es hacer cosas tan chulas como 2.days.ago<br><br>
+
+						Tambien es normal que alguna gente quiera renunciar a su libertad en pos de su seguridad...<br><br>
+
+						7. El Valor en el sistema integrado<br><br>
+
+						rails puede usarse para diferentes cosas pero sobre todo esta enfocado en construir segun
+						palabras de dhh Monolitos Majestuosos. <br><br>
+						Que quiere decir que rails se ocupa de frontend, JS, base de datos, migraciones, entornos, logs, emails, websockets, internacionalizacion, cache,<br><br>
+
+						El proposito de rails no es separar a los especialistas en pequeños nichos,
+						sino equipar a la persona para construir sistemas integrados monoliticos.<br><br>
+
+						Para mi y esto es una opinion propia no deberia partirse el monolito en servicios o microservicios sin verdadera una razon.
+						Ya que añades nuevos problemas al problema como latencias, estado, operaciones no atomicas.<br><br>
+
+						8. Progreso sobre estabilidad<br><br>
+
+						Normalmente en un sistema con mas 10 años de historia, como rails, su tendencias es congelarse, ya que cuando cambias algo
+						probablemente le rompas algo a alguien en algun sitio seguro. Pero el show debe seguir y rails sigue su camino hacia delante y
+						cuando cambia de major seguro que muchas cosas dejan de funcionar.<br><br>
+
+						Esto deja a mucha gente atras, y no es para todo el mundo<br><br>
+
+						Por ejemplo github https://github.blog/2018-09-28-upgrading-github-from-rails-3-2-to-5-2/<br><br>
+
+						Github hizo un fork en rails 2.3 por problemas graves de rendimiento en rails 3 y hasta 2019 no ha conseguido volver a subir al carro 
+						de la ultima version de rails 5 en 2018. Y tardaron un año creo<br><br>
+
+						9. Monta una tienda de campaña grande<br><br>
+
+						Con tantas ideas controvertidas y un caracter tan fuerte como el de dhh uno podria pensar que solo dhh usa rails
+						pero no es asi el propio dhh reconoce que la diversidad es bienvenida y rails crece en direcciones que dhh no aprueba.<br><br>
+
+						Un ejemplo de ello es RSpec que es un DSL de testing contra el que dhh a despotricado y que no deja de acumular exitos.<br><br>
+
+						O que a pesar de que dhh mantiene rails enfocado en construir sistemas integrados (Monolitos). Ha permitido y mejorado la construccion de APIs con rails<br><br>
+
+						En palabras de dhh, esto no pasa por que si, tiene detras un gran trabajo dando la bienvenida a la gente,
+						porque nunca sabes si la persona que corrige un error tipografico en la documentacion será la que implemente ultima gran funcionalidad de Rails. <br><br>
+
+					</aside>
+					</section>
+					<section>
+						<h5>Exalt the beauty</h5>
+						<pre class="ruby"><code data-trim data-noescape>
+						class Project < ApplicationController
+						  belongs_to :account
+						  has_many :participants, class_name: 'Person'
+						end
+						</code></pre>
+						<aside class="notes">
+						parece un DSL pero no, es solo una llamada a metodos son simbolos <br><br>
+						</aside>
+					</section>
+					<section>
+						<h5>Provide sharp knives</h5>
+						<pre class="ruby"><code data-trim data-noescape>
+						1.month.from_now
+						2.days.ago
+						</code></pre>
+						<aside class="notes">
+						suministrar herramientas afiladas, a pesar de que nos podamos cortar un dedo,
+						para eso estan los test	se pueden hacer cosas tan chulas como esto
+						</aside>
+					</section>
+					<section>
+						<img src="./resources/dhh.jpg" alt="" height="160px">
+						<p>
+							<a href="https://rubyonrails.org/doctrine/">Ruby on Rails Doctrine</a>
+							<ul>
+								<li> 01. Optimize for programmer happiness</li>
+								<li> 02. Convention over Configuration</li>
+								<li> 03. The menu is omakase</li>
+								<li> 04. No one paradigm</li>
+								<li> 05. Exalt beautiful code</li>
+								<li> 06. Provide sharp knives</li>
+								<li> 07. Value integrated systems</li>
+								<li> 08. Progress over stability</li>
+								<li> 09. Push up a big tent</li>
+								<li> 10. Frameworks should be extracted not build
+							</ul>
+						</p>
+						<aside class="notes">
+							Hay una frase de dhh que yo consideraria como decimo punto, aunque en realidad no
+							pertenece a la doctrina de rails pero en mi opinion refleja	mucho de lo que
+							ruby on rails es. <br> <br>
+
+							Un framework deberia ser extraido de una aplicacion no construido. dhh extrajo rails de
+							su app basecamp.
+						</aside>
+					</section>
+				</section>
+
+
+
+				<section>
+					<section>
+						<img src="resources/ruby-core-in-c.png" alt="">
+						<h1>Ruby</h1>
+
+						<aside class="notes">
+							Una de las cosas que me gustan de Ruby es que está construido en C
+							asi que si necesitas rendimiento por encima de todo, puedes crearte tu libreria en c.
+							Como consecuencia directa de esto, algunas librerias del propio lenguaje y algunas gemas necesitan 
+							ser compiladas durante su instalacion <br><br>
+
+							Cuando eso ocurre veremos un mensaje diciendo algo como<br><br>
+
+						</aside>
+					</section>
+					<section>
+						<pre class="bash"><code data-trim data-noescape>
+						Building native extensions.  This could take a while...
+						ERROR:  Error installing $gem_name:
+						ERROR: Failed to build gem native extension.
+						</code></pre>
+						<aside class="notes">
+							Construyendo extension nativa... esto podria llevarnos algo de tiempo <br><br>
+
+							asegurate que tienes todos las herramientas para compilar en c, me refiero a
+							librerias como openssl-devel, readline-devel, nokogiri, libxslt, sqlite, para que
+							la compilacion no falle.<br> <br>
+
+							pero si simplemente quieres probar el lenguaje...
+						</aside>
+					</section>
+					<section>
+						<img src="resources/matz.jpg" alt="" width="200px">
+						<p> You can try ruby in your browser at with zero pain</p>
+						<p><a href="https://ruby.github.io/TryRuby/">https://ruby.github.io/TryRuby/</a></p>
+						<aside class="notes">
+							puedes hacerlo desde ese enlace, ruby con cero dolores de cabeza.
+						</aside>
+					</section>
+				</section>
+
+
+
+				<section>
+					<section>
+						<h3>What version ruby I should use?</h3>
+						<aside class="notes">
+						Ruby es el lenguaje sobre el que esta construido rails asi que
+						la primera pregunta seria ¿Que versión de ruby deberia usar?<br> <br>
+						</aside>
+					</section>
+					<section>
+						<img src="resources/whatsapp-rubyversion.png" alt="" height="900px;">
+						<aside class="notes">
+						y la respuesta es cualquiera, porque deberias instalar una herramienta que te
+						permita usar varias versiones de ruby a la vez. <br><br>
+
+						Pero tambien deberias probar a usar docker. Porque docker se está convirtiendo en
+						una herramienta transversal y si no sabes usar docker deberias aprender. <br><br>
+
+						Mi gestor de versiones de ruby favorito es rbenv
+						</aside>
+					</section>
+					<section>
+						<h3>rbenv installation...</h3>
+
+						<pre class="bash"><code data-trim data-noescape>
+						# rbenv installation
+						git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+						echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
+						~/.rbenv/bin/rbenv init
+
+						# verification
+						curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
+						# rbenv upgrade
+						cd ~/.rbenv ; git pull
+
+						# plugins for
+						git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build
+						</code></pre>
+
+						<aside class="notes">
+						como tenemos 45 minutos no tenemos tiempo para hacer la instalacion asi que usaremos la mia
+						</aside>
+					</section>
+					<section>
+						<img src="resources/terminal-gnome-icon.png" alt="" height="400px;">
+						<h4>terminal showtime #1</h4>
+						<aside class="notes">
+						</aside>
+					</section>
+				</section>
+
+
+
+				<section>
+					<section>
+						<h3>Libraries in Ruby</h3>
+						<img src="resources/libraries-in-ruby-are-called-gems.png" alt="" width="600px">
+						<h3> are called gems</h3>
+						<aside class="notes">
+						Ya tenemos el lenguaje funcionando, ahora las librerias. En ruby las librerias se llaman gemas <br><br>
+
+						Algunos ejemplos de gemas son <br><br>
+						 rails <br><br> sinatra <br><br>, sequel<br><br> jekyll<br><br>
+						</aside>
+					</section>
+					<section>
+						<img src="resources/terminal-gnome-icon.png" alt="" height="400px;">
+						<h4>terminal showtime #2</h4>
+						<aside class="notes">
+							vamos a ver como instalar, desistalar gemas en ruby
+						</aside>
+					</section>
+				</section>
+
+
+
+				<section>
+					<section>
+						<h5>The Dependencies in ruby are handle with Bundler</h5>
+						<p>
+						<img src="resources/dependences-bundler-logo.png" alt="" width="800px">
+						</p>
+						<p>
+						<img src="resources/dependences-palet-rails.png" alt="" height="500px">
+						</p>
+						<aside class="notes">
+						el gestor de dependencias en ruby hasta la version 2.6 del lenguage tambien es una gema externa,
+						 que hay que instalar. Esta gema se llama bundler. <br>
+
+						y a partir del ruby 2.6 esta incluido en el lenguaje por lo que no hay que instalarlo
+						si usas una version de ruby igual o posterior a la  2.6
+						</aside>
+					</section>
+					<section>
+						<img src="resources/terminal-gnome-icon.png" alt="" height="400px;">
+						<h4>terminal showtime #3</h4>
+						<aside class="notes">
+							Vamos a la terminal para ver como usar bundler
+						</aside>
+					</section>
+					<section>
+						<h4>dependencies into rails project</h4>
+						<img src="resources/dependencies-ror-gemfile.png" alt="" height="700px">
+						<p>They are legion</p>
+						<aside class="notes">
+						Veamos las dependencias en rails, este grafico se puede obtener con
+						el comando `bundle gem` ya profundizaremos en ellas mas adelante
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<h3>Versions in Ruby on Rails</h3>
+					<h6>semantic of versioning</h6>
+					<ul>
+						<li>MAJOR.MINOR.PATCH.SECURITY_FIX</li>
+						<li>x.y.z</li>
+						<li>5.2.2</li>
+						<li>5.2.2.1</li>
+						<li>6.0.0.beta1</li>
+						<li>6.0.0.beta2</li>
+						<li>6.0.0.beta3</li>
+						<li>6.0.0.rc1</li>
+					</ul>
+					<aside class="notes">
+						Antes de seguir vamos a aclarar la nomenclatura que siguen las versiones de rails <br><br>
+
+						El primer numero X representa un "Major release" y dos major diferentes son incompatibles <br>
+						El segundo numero Y representa un "Minor release" y dos minor diferentes son compatibles <br>
+						El tercer numero Z representa un "Patch" para algun bug y son compatibles hacia atras <br>
+						El cuarto numero no siempre aparece, pero indica un security fix y tambien se usa para marcar las betas 
+						las release candidates
+					</aside>
+				</section>
+
+				<section>
+					<h6>new <img src="resources/logo-RubyOnRails.png" alt="" width="100px"> project</h6>
+					<pre class="bash"><code data-trim data-noescape>
+					rails new --help $project_name
+					rails new --api
+					rails new --database=sqlite|mysql|postgres
+					rails new --skip-test
+					rails new --skip-action-mailer --skip-active-record --skip-active-storage --skip-action-cable --skip-sprockets --skip-spring
+					rails new --skip-coffee --skip-javascript --skip-turbolinks
+					rails new --webpack=react|vue|angular|elm|stimulus
+
+					rails new --template=https://github.com/mattbrictson/rails-template/blob/master/template.rb
+					</code></pre>
+					<strong>advance: see rails composer <br> <a href="http://www.railscomposer.com/">http://www.railscomposer.com/</a> </strong>
+
+					<aside class="notes">
+					Ahora vamos a pasar a crear un nuevo proyecto en Rails <br><br>
+
+					La inicializacion de un proyecto de rails seria un infierno que no queremos repetir
+					para cada proyecto, recordad DRY. no queremos andar repitiendonos<br><br>
+
+					Por eso rails nos da una herramienta para generar toda la estructura de ficheros. <br><br>
+
+					una de las cosas que me gustaria remarcar es que si lo pensais cada una de estas opciones de creacion
+					de un nuevo proyecto representa un exito desacoplando componentes. Porque aunque rails sea un monolito
+					no todo esta acoplado
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/logo-RubyOnRails.png" alt="" width="100px"> <strong>Folder Structure in Rails Project</strong>
+					<img src="resources/rails-structure-folder.png" alt="">
+					<aside class="notes">
+						he partido la esctructura en tres partes la: <br><br>
+						- la primera columna contiene la carpeta app donde viven
+						Assets, Channels, Controller, Views, Helpers, Jobs, Mailers, Models Views <br> <br>
+
+						tambien se pueden ver en verde los script ejecutable dentro de la carpeta bin<br> <br>
+
+						- la segunda columna contiene configuracion de toda la aplicacion <br><br>
+						si queremos modificar alguna convencion de como está configurado rails, o configurar
+						una nueva gema es aqui donde tenemos que buscar <br> <br>
+
+						- la tercera parte que contiene la parte del proyecto destinada a librerias y a testing.
+					</aside>
+				</section>
+
+
+				<section>
+					<section>
+						<p>
+						<img src="resources/logo-RubyOnRails.png" alt="" width="125px" style="padding-top:5px;"> is a MVC (model-view-controller)
+						</p>
+						<p>
+						<img src="resources/mvc-of-rails-simple.png" alt="">
+						</p>
+						<aside class="notes">
+						Rails organiza todo su codigo conforme al patron MVC.<br><br>
+
+						Y siguiendo sus propias convenciones cualquier
+						programador rails sabe encontrar cada uno de esos componentes en la estructura de un proyecto en rails.
+						</aside>
+					</section>
+					<section>
+						<p>
+						Let's see the M
+						</p>
+						<p>
+						<img src="resources/mvc-of-rails-simple.png" alt="">
+						</p>
+						<p>
+							<ul>
+								<li>ActiveRecord</li>
+								<li>ActiveRecord Migration</li>
+								<li>ActiveRecord Validations</li>
+								<li>ActiveRecord Callbacks</li>
+								<li>ActiveRecord Associations</li>
+							</ul>
+						</p>
+						<aside class="notes">
+							La "M" corresponde el modelo.
+							En rails los modelos estan construidos usando el patron de diseño Active Record.
+							ActiveRecords nos aisla de usar SQL dentro de rails. <br> <br>
+
+							Es un ORM que se encargan de mapear las instancias de objetos en ruby con filas de las tablas
+							dentro de la base de datos. Ademas soporta migraciones, validaciones, callback, asociaciones.
+							Y gracias a el puedo cambiar entre diferentes motores de bases de datos solo cambiando la configuracion.
+						</aside>
+					</section>
+					<section>
+						<p>
+						Let's see the V
+						</p>
+						<p>
+						<img src="resources/mvc-of-rails-simple.png" alt="">
+						</p>
+						<p>
+							<ul>
+								<li>ActionView</li>
+								<li>Partials</li>
+								<li>ActionViewHelpers</li>
+							</ul>
+						</p>
+						<aside class="notes">
+							La "V" corresponde a la vista y se encarga de construir o renderizar el contenido final que será mostrado 
+							al cliente. <br><br>
+
+							La vista no debe contener contener logica y puede utilizar las variables y modelos que el controlador haya
+							declarado como atributos. <br> <br>
+
+							ActionView es un framework que maneja el motor de templates que se usa para renderizar, por eso se puede cambiar
+							de motor de plantillas entre ERB que es el motor por defecto o cambiar a HAML, SLIM, Tilt, Liquid, mustache. <br> <br>
+
+							Hay ocasiones que dos vistas "podrian querer renderizar lo mismo" para compartir ese comportamiento 
+							se puede usar ActionViewHelper. destinado a compartir funcionamiento entre varias vistas.
+						</aside>
+					</section>
+					<section>
+						<p>
+						Let's see the C
+						</p>
+						<p>
+						<img src="resources/mvc-of-rails-simple.png" alt="">
+						</p>
+						<p>
+							<ul>
+								<li>ActionController</li>
+								<li>ApplicationController</li>
+							</ul>
+						</p>
+						<aside class="notes">
+						La "C" corresponde al controller.<br>
+						En Rails un ActionController es el encargado, cargar y preparar todos los recursos que la vista necesita
+						para renderizarse facilitando asi que la vista sea lo mas simple posible.<br><br>
+
+						Todos los action controller heredan del ApplicationController e implementan diferentes metodos, <br><br>
+
+						Esto que voy a decir no es recomendable hacerlo siempre pero si queremos meter un comportamiento comun a todos,
+						debemos escribir nuestro codigo dentro del ApplicationController haciendolo accesible en el resto de controladores<br><br>
+
+						</aside>
+					</section>
+					<section>
+						<p>
+							<img src="resources/logo-RubyOnRails.png" alt="" width="125px" style="padding-top:5px;"> is a MVC (model-view-controller)
+						</p>
+						<p>
+						<img src="resources/mvc-of-rails-multiple.png" alt="">
+						</p>
+						<aside class="notes">
+						En rails se pueden y se deben tener varios controlladores para diferentes partes de	la aplicacion. 
+						Esto nos da la convencion de como segmentar el codigo en nuestra aplicacion	en trozos mas pequeños. <br><br>
+
+						Por ultimo hay un componente del que no he hablado pero está en la imagen, el router: El router será quien seleccione el controlador adecuado.
+						</aside>
+					</section>
+				</section>
+
+
+				<section>
+					<p>
+					Let's put all the pieces together: Scaffolding
+					</p>
+					<img src="resources/terminal-gnome-icon.png" alt="" height="400px;">
+					<h4>terminal showtime #4</h4>
+					<aside class="notes">
+					vamos a ver todo esto en un ejemplo.
+					</aside>
+				</section>
+
+
+
+				<section>
+					<section>
+						<p>
+						<img src="resources/heroku-logo.png" alt="" height="400px;">
+						<h4>heroku time, deployment</h4>
+						<a href="https://devcenter.heroku.com/">https://devcenter.heroku.com/</a><br>
+						<a href="https://devcenter.heroku.com/articles/heroku-cli">https://devcenter.heroku.com/articles/heroku-cli</a>
+						</p>
+						<aside class="notes">
+						Heroku es una plataforma en la nube que pertenece a salesforce y
+						que permite desplegar usando tu repositorio de git, y una documentacion
+						pasito a pasito, genial para empezar <br><br>
+
+						Pero no para empezar en ruby en cualquier stack <br><br>
+
+						Heroku es lo que vamos a usar para desplegar asi que al lio
+						</aside>
+					</section>
+					<section>
+						<h1>Deploy time!!</h1>
+						<img class="" src="./resources/we-pray-to-rhllor.jpg" alt="" height="600px">
+						<p>We pray to lord of the light, </p>
+
+						<p> because the deployment is dark and full of terrors</p>
+						<aside class="notes">
+						Le pedimos al señor de luz que cuide de nosotros durante el despliegue  para no tener un final tan horrososo como el de juego de tronos
+						</aside>
+					</section>
+				</section>
+
+
+
+
+
+				<section>
+					<img src="resources/what-missing-of-rails.jpg" alt="">
+					<p>
+					<h6>what content would be missing in this talk?</h6>
+					</p>
+					<aside class="notes">
+						Que faltaria en esta charla de rails... pues muchas cosas...
+					</aside>
+				</section>
+
+
+				<section>
+					<h4>MVC in depth</h4>
+					<ul>
+						<li>ActiveRecord in depth</li>
+						<li>Models Validations in depth</li>
+						<li>Migrations in depth</li>
+						<li>ActiveRecord Callbacks</li>
+						<li>ActiveRecords Associations</li>
+					</ul>
+					<strong>Migrations in depth</strong>
+					<aside class="notes">
+					Nos ha faltado hablar en profundidad de los modelos y lo que ofrece en rails
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/logo-html-css-js.png" alt="">
+					<h6>assets pipeline</h6>
+					<p>Rails can convert assets like img, js, css, scss...</p>
+					<aside class="notes">
+					Nos ha faltado El assets pipeline proporciona un framework para concatenar y minificar o comprimir
+					todos los assets CSS SASS, JS. <br><br>
+
+					el assets pipeline esta implementado usando la gema sprockets aunque puedes desactivarlar
+					con el flag --skip-sprockets cuando creas la aplicacion.
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/logo-webpack.png" alt="" width="300px">
+					<h6>Frontend Javascript in Rails</h6>
+					<p>Rails can use webpack throught webpacker gem</p>
+					<img src="resources/css-frameworks.png" alt="" width="400px">
+					<h6>CSS frameworks in Rails</h6>
+
+					<aside class="notes">
+					Nos ha faltado hablar de frontend dentro de Rails puede hacer uso de webpack mediante
+					el uso de la gema webpacker <br>
+
+					Tambien que Rails se integra perfectamente con cualquier framework css...
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/i18n-fun-with-flags.jpg" alt="" width="800px">
+					<h6>I18n (internacionalization)</h6>
+					<aside class="notes">
+					Nos ha faltado hablar de internacionalizacion, es decir el soporte de varios idiomas que
+					viene de serie en rails y es importante empezar a usarlo desde el principio
+					</aside>
+
+				</section>
+
+				<section>
+					<img src="resources/fingerprint.png" alt="" width="200px">
+					<h5>fingerprint</h5>
+					<aside class="notes">
+						No hemos hablado de fingerprint que es una tecnica que se usa para hacer el nombre del "asset" imagen,
+						documento css, documento js,  dependiente del contenido de ese fichero. <br><br>
+
+						Consiguiendo que cuando el fichero cambia de contenido el nombre del fichero que se sirve
+						tambien lo hace <br><br>
+
+						esto nos da una forma facil de distingir si dos ficheros son el mismo entre deployment. Y
+						puede ser aprovechado facilmente para la cache.<br><br>
+
+						Si el fichero no ha cambiado conserva el nombre bajo el que es pedido, pero si ha cambiado es servido
+						con otro nombre, de forma que se invalida la cache... <br><br>
+
+						Esta técnica se usa en todo el asset pipeline. <br><br>
+
+						El problema de esta tecnica es que no todas las caches confian en el nombre del fichero
+
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/mail.png" alt="">
+					<h6>ActionMailer</h6>
+					<p>Rails can send email</p>
+					<h6>ActionMailbox (Rails 6)</h6>
+					<p>Rails in the future use mailboxes</p>
+					<aside class="notes">
+					No hemos hablado de ActionMailer que es el componente de rails  que nos
+					permite construir correos y enviarlos. <br> <br>
+
+					Tampoco hemos hablado ActionMailbox nuevo en rails 6, que nos permite interactuar con un buzon
+					de correo ejecutar codigo a partir del contenido de mailbox.
+					</aside>
+				</section>
+
+
+				<section>
+					<img src="resources/background-job.png" alt="">
+					<h3>ActiveJobs</h3>
+					<p>Rails can run task in background</p>
+					<aside class="notes">
+					No hemos hablado de ActiveJobs que nos permite ejecutar tareas en
+					background dentro de rails.
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/active-storage.png" alt="">
+					<h3>ActiveStorage</h3>
+					<p>Rails can interactuate with popular cloud storage</p>
+					<aside class="notes">
+					No hemos hablado de ActiveStorage que nos transformar imagenes usando ImageMagick
+					para despues subirlas a nubes como <br><br>
+					Amazon S3 <br>
+					Google Cloud Storage <br>
+					Azure Storage <br>
+					</aside>
+				</section>
+
+				<section>
+					<img src="resources/actioncable.png" alt="" width="300px">
+					<h3>ActionCable</h3>
+					<p>Rails can use websockets</p>
+					<aside class="notes">
+					No hemos hablado de ActionCable que nos permite interactuar con websockets<br><br>
+					</aside>
+				</section>
+
+
+				<section>
+					<img src="resources/andmoreadvancetopic.png" alt="">
+					<h3>And more Advance Topics</h3>
+					<p>
+						<ul>
+							<li>Hot reloading (guard and livereload)</li>
+							<li>Docker for Rails</li>
+							<li>Gemology</li>
+							<li>Rails Engines</li>
+							<li>Testing, TDD in rails</li>
+							<li>Auth</li>
+						</ul>
+					</p>
+					<aside class="notes">
+					Y de muchas mas cosas que tiene rails nada mas sacarlo de la caja
+					</aside>
+				</section>
+
+
+				<section>
+					<img src="resources/fail.png" alt="" height="200px">
+					<h6 style="line-height:200px;vertical-align: top;">more is not always the best<br></h6>
+					<p>Having the tools does not imply that you know how to use them successfully</p>
+					<aside class="notes">
+						A veces Mas no es mejor. en mi caso tener tantas herramientas
+						al alcance de la mano no implica que sepas usarlas correctamente. <br><br>
+
+						A veces tendras que pagar el precio con tiempo y experiencia <br>
+					</aside>
+				</section>
+
+
+				<section>
+					<img src="resources/applause-bender.png" alt="" height="300px">
+					<h5>thanks to</h5>
+					<ul>
+						<img src="resources/logo_osc.png" alt="" width="200px" style="padding-right:50px">
+						<img src="resources/andaluciarb.png" alt="" width="100px">
+					</ul>
+					<p style="padding-top:60px"><strong> Please visit <br> <a href="https://andalucia.onruby.eu">https://andalucia.onruby.eu</a> </strong></p>
+					<p> <small> powered by docker, ruby, rails and reveal.js </small></p>
+					<aside class="notes">
+						Muchas gracias por organizar este eventazon que he disfrutado como oyente y gracias a vosotros por escucharme.
+					</aside>
+				</section>
+
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				width: 1380,
+				height: 1024,
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>

@@ -6,7 +6,7 @@ A talk for Open South of Code 2019:  a ruby on rails overview for newbies
 ```bash
 sudo systemctl start docker
 source .xmodmap-apple
-```
+```gem
 
 
 
@@ -24,8 +24,8 @@ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor 
 
 rbenv
 
-rbenv versions
-rbenv install -l
+rbenv versions      #  preguntar por las versiones instaladas
+rbenv install -l    #  listar ls posible que podrias instalar, las diferentes implementaciones
 
 rbenv global
 rbenv global 2.6.3
@@ -41,50 +41,22 @@ cat .ruby-version
 
 rbenv which irb
 rbenv whence irb
-rbenv whence rails
+rbenv whence rails  # mostrar en que versiones de ruby esta instalado una gema 
 
 rbenv shell
 
-rbenv rehash
+rbenv rehash        # a veces tras instalar una gema tienes que ejecutar esto
 ```
 
 
-Why rbenv is sooo cool!! because it has been fork in every language
 
 ```bash
+# Why rbenv is sooo cool!! because it has been fork in every language
 phpenv
 nodenv
 pyenv
 goenv
 ```
-
-
-
-Until now we use a ruby installation into our machine, from now docker a tope
-
-
-- using `docker run`
-
-now ruby versions using docker
-
-
-[https://hub.docker.com/_/ruby](https://hub.docker.com/_/ruby)
-
-```bash
-docker pull ruby:2.6.3
-# while download, why is so important learn docker
-# let me overdone
-# docker knowledge is a transversal independenly of your stack...
-docker run -i -t --rm ruby:2.6.3
-```
-
-```ruby
-puts RUBY_VERSION
-Random.bytes(1)
-[1,2,3].difference([3,4])
-[1,2,3].union([3,4])
-```
-
 
 
 BACK TO THE SLIDES
@@ -99,38 +71,47 @@ BACK TO THE SLIDES
 
 
 
+
+
+
+
 ## terminal show 2: libraries in ruby gems
 
-- gems are managed using `gem` cli tool
+- para gestionar las gemas ruby provee de `gem` cli tool
 
 ```bash
 gem
 
-gem server
+gem list                 # nos permite listar gemas instaladas
+gem server               # abrir un servidor web con documentacion
 
-gem search --remote --all rails
+gem search --remote --all rails      # gem nos permite buscar 
 gem search
 gem search rails --remote --all | grep '^rails '
 
-gem list
 
-gem install rails
+gem install rails                     # gem nos permite instalar
 gem install --no-ri --no-rdoc
 gem install rails --version=5.2.1
 gem install rails -v 5.2.1
 
-gem uninstall rails
+gem uninstall rails                   # gem nos permite desistalar
 gem uninstall rails -v 5.2.1
 
-gem update rails
+gem update rails                      # gem nos permite actualizar
+
+
+
+# PERO GEM NO NOS MANEJA LAS DEPENDENCIAS....
+
 ```
 
 
 
-but we want to write dependences names and versions into one file the `Gemfile`
 
 
-BACK TO SLIDES...
+
+BACK TO SLIDES
 
 
 
@@ -151,9 +132,11 @@ BACK TO SLIDES...
 
 ## terminal show 3: Dependences Fortunely exist bundler
 
-bundler is a gem need install
+
 
 ```bash
+# bundler debe ser instalado en primer lugar
+
 docker run -it --rm ruby:2.5.3
 docker ps -a
 docker exec -it c43f5681053a /bin/bash
@@ -163,32 +146,23 @@ apt-get install vim
 gem install bundler
 rbenv rehash
 
-bundle
-# bundle needs a Gemfile
+bundle       # bundle needs a Gemfile
 cd ; cd osc ; mkdir deleteme ; cd deleteme
 bundle init
+
+bundle add bundle-audit           # vamos a añadir una gema a nuestras dependencias
+bundle check                      # 
+bundle install                    # instalamos todas nuestras dependencias
+bundle show                       # visualizamos nuestras dependencias
+
+bundle outdate                    # visualizamos las dependencias que podriamos actualizar
+bundle update                     # las actualizamos
+
+
+bundle exec                       # EL MAS IMPORTANTE, ejecutamos algo en ruby permitiendo
+                                  # tan solo usar las gemas que aparecen en el Gemfile
 ```
 
-```ruby
-source "https://rubygems.org"
-
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
-
-gem "rails"
-gem 'rails', '>=5.2.2.2'
-gem 'rails', '~>5.2.2.2' # '>=5.2.2.2' and '<2.1' # ~> pesimist operator
-
-gem 'rails', '~>6.0.0.rc1
-
-group :development, :test do
-  gem 'rspec-rails'
-end
-
-gem 'byebug', :group => :development
-gem 'byebug', :group => [:development, :test]
-
-gem 'nokogiri', :git => 'https://github.com/tenderlove/nokogiri.git', :branch => '1.4'
-```
 
 
 Most of the version specifiers,
@@ -200,37 +174,12 @@ ruby '1.9.3', :engine => 'jruby', :engine_version => '1.6.7'
 ```
 
 
-```bash
-cd rails-001
-bundle --help
-
-bundle init
-
-bundle
-bundle install
-
-bundle check
-bundle show
-
-bundle outdated
-bundle update
-bundle dependency
-bundle viz
-
-bundle package
-
-bundle doctor
-
-bundle add
-bundle remove
-bundle clean
-
-bundle console
-bundle exec # execute script into current bundle
-```
 
 
 
+
+
+BACK TO THE SLIDES
 
 
 
@@ -281,9 +230,15 @@ CREATE DATABASE os_test;
 
 
 ```bash
-npm i -g yarn
-bin/rail webpacker:install
+cd osc
+atom .
 ```
+
+
+
+
+
+
 
 ```yml
 # config database.yml
@@ -291,8 +246,9 @@ default: &default
   host: localhost
   username: postgres
 ```
+
 FIJATE en como aprovechamos las convenciones de rails para no ir a contracorriente... como se
-llaman las bases de datos osc_developement osc_production osc_test
+llaman las bases de datos osc_development osc_production osc_test
 
 ahora vamos a probar a arrancar rails
 
@@ -306,50 +262,55 @@ git commit -m "rails new osc --version 5.2.3"
 
 pulsado el boton se salvado, vamos a usar otro generador que viene con rails
 
+### PRIMER SCAFFOLD
 
 ```bash
 bin/rails generate scaffold --help
 bin/rails generate scaffold author name:string surname:string slug:string
 bin/rails db:migrate
 
-# select tablename, indexname from pg_indexes where tablename='authors';
+# GO TO THE BROWSER!!!!
+# http://localhost:3000/authors
+# http://localhost:3000/authors.json
+# http://localhost:3000/author/1.json
+
+bin/rails test     # YA TENEMOS TEST
 
 
-# go to http://localhost:3000/authors
+# VAMOS A VER POR ENCIMA LAS MIGRACIONES
 bin/rails db:migrate:status
-# check timestamp
 bin/rails db:migrate:down VERSION=20190519224055
-bin/rails destroy scaffold author
 
+
+# NO VAMOS A DESTRUIRLO PERO PODRIAMOS...
+bin/rails destroy scaffold author
 git status
 git clean -df
 
-# de nuevo desde el principio
-bin/rails generate scaffold author name:string surname:string slug:string
-bin/rails db:migrate
-
-bin/rails test
 
 # git time
 git add .
 git commit -m "authors scaffold"
-
-bin/rails generate scaffold book title:string description:text slug:string: price:decimal author:references
-bin/rails db:migrate
 ```
 
 
-Antes dije que nos faltaba algo y ese algo es el router que nos permite diferenciar
-que controller servira que rutas
 
-http://localhost:3000/authors
-http://localhost:3000/books
-
-
-insisto de nuevo una de las mayores bondades de rails es que tiene grabado a fuego en su adn el testing, vamos a hacer los test
+### SEGUNDO SCAFFOL
 
 ```bash
+bin/rails generate scaffold book title:string description:text slug:string: price:decimal author:references
+bin/rails db:migrate
+
+# momento traumatico, rails tiene grabado a fuego en su adn los test
 bin/rails test
+```
+
+
+
+
+
+```bash
+
 ```
 
 paaaaa error!!
@@ -365,7 +326,16 @@ new checkpoint: git time
 ```bash
 git add .
 git commit -m "scaffold books"
+# se acabo la demo
 ```
+
+BACK TO THE SLIDESS
+
+
+
+
+
+
 
 
 
@@ -414,198 +384,8 @@ BACK TO THE SLIDES
 ## build API with rails
 
 
-
-
-
-
-
 CUT HERE, 45 MINUTES ONLY
 
-
-
-##  añadimos la logica de negocio de author
-
-- app/models/author.rb
-```ruby
-class Author < ApplicationRecord
-  validates :name, :surname, :slug, presence: true
-  validates :slug, uniqueness: true
-
-end
-```
-
-- test/fixtures/authors.yml
-```yml
-sandi_metz:
-  name: Sandi
-  surname: Metz
-  slug: sandi-metz
-
-katrina_owen:
-  name: Katrina
-  surname: Owen
-  slug: katrina-owen
-
-sam_ruby:
-  name: Sam
-  surname: Ruby
-  slug: sam-ruby
-
-rob_isenberg:
-  name: Rob
-  surname: Isenberg
-  slug: rob-isenberg
-```
-
-- db/seeds.rb
-```ruby
-sandi_metz = Author.create([name: 'Sandi', surname: 'Metz', slug: 'sandi-metz'])
-katrina_owen = Author.create([name: 'Katrina', surname: 'Owen', slug: 'katrina-owen'])
-sam_ruby = Author.create([name: 'Sam', surname: 'Ruby', slug: 'sam-ruby'])
-rob_isenberg = Author.create([name: 'Rob', surname: 'Isenberg',slug: 'rob-isenberg'])
-```
-
-
-- models/author_test.rb
-
-```ruby
-require 'test_helper'
-
-class AuthorTest < ActiveSupport::TestCase
-  def test_valid_author
-    assert Author.new(name: 'valid', surname: 'valid', slug: 'valid-valid').valid?
-  end
-  def test_invalid_author_name_empty
-    refute Author.new(name: nil, surname: 'partial_valid', slug: '-partial_valid').valid?
-  end
-  def test_invalid_author_surname_empty
-    refute Author.new(name: 'partial_valid', surname: nil, slug: 'partial_valid-').valid?
-  end
-  def test_invalid_author_uniqueness_slug
-    assert Author.new(name: 'valid1', surname: 'valid1', slug: 'invalid-slug').save
-    refute Author.new(name: 'valid2', surname: 'valid2', slug: 'invalid-slug').valid?
-  end
-end
-```
-
-
-
-## añadimos la logica de negocio de books
-
-- app/models/book.rb
-
-```ruby
-class Book < ApplicationRecord
-  validates :title, :slug, presence: true , uniqueness: true
-end
-```
-
-- db/seeds.rb
-```ruby
-agile_web_development_with_rails51 = Book.create(
-  [
-    title: 'Agile web development with rails 5.1',
-    brief: 'a classic book to start with rails, published for every major rails version...',
-    slug: 'agile-web-development-with-rails-5-1:'
-  ]
-)
-
-bottles_of_OOP = Book.create(
-  [
-    title: '99 Bottles of OOP',
-    brief: 'a book for improve your ruby skill, of brilliant Katrina owen and Sandi Metz',
-    slug: '99-bottles-of-oop',
-  ]
-)
-
-practical_object_oriented_design_in_ruby = Book.create(
-  [
-    title: 'Practical object-oriented design in ruby',
-    brief: 'Meticulously pragmatic and exquisitely articulate, POODiR make otherwise elusice knowledge available',
-    slug: 'practical-object-oriented-design-in-ruby',
-  ]
-)
-
-docker_for_rails_developer = Book.create(
-  [
-    title: 'Docker for rails developer',
-    brief: 'build, ship and run your application everywhere',
-    slug: 'docker-for-rails-developers'
-  ]
-)
-```
-
-- test/fixtures/books.yml
-```yml
-agile-web-development-with-rails-5-1:
-  title: 'Agile web development with rails 5.1'
-  brief: 'a classic book to start with rails, published for every major rails version...'
-  slug: 'agile-web-development-with-rails-5-1:'
-
-99bottlesOOP:
-  title: '99 Bottles of OOP'
-  brief: 'a book for improve your ruby skill, of brilliant Katrina owen and Sandi Metz'
-  slug: 99-bottles-of-oop
-
-practical-object-oriented-design-in-ruby:
-  title: 'Practical object-oriented design in ruby'
-  brief: 'Meticulously pragmatic and exquisitely articulate, POODiR make otherwise elusice knowledge available'
-  slug: 'practical-object-oriented-design-in-ruby'
-
-docker-for-rails-developer:
-  title: 'Docker for rails developer'
-  brief: 'build, ship and run your application everywhere'
-  slug: 'docker-for-rails-developers'
-```
-
-- test/models/book_test.rb
-
-```ruby
-require 'test_helper'
-
-class BookTest < ActiveSupport::TestCase
-  def test_valid_book
-    assert Book.new(title: 'valid title', brief: 'a valid brief of book', slug: 'valid-title').valid?
-  end
-  def test_invalid_book_title_nil
-    refute Book.new(title: nil, brief: 'a valid brief of book', slug: 'valid-title').valid?
-  end
-  def test_invalid_book_title_uniqueness
-    assert Book.new(title: 'book valid 1', brief: 'a valid brief of book', slug: 'book-valid-1').save
-    refute Book.new(title: 'book valid 1', brief: 'a valid brief of book', slug: 'book-valid-2').valid?
-  end
-  def test_invalid_book_title_empty
-    refute Book.new(title: '', brief: 'a valid brief of book', slug: 'valid-title').valid?
-  end
-  def test_invalid_book_slug_nil
-    refute Book.new(title: nil, brief: 'a valid brief of book', slug: nil).valid?
-  end
-  def test_invalid_book_slug_empty
-    refute Book.new(title: '', brief: 'a valid brief of book', slug: '').valid?
-  end
-  def test_invalid_book_slug_uniqueness
-    assert Book.new(title: 'book valid 1', brief: 'a valid brief of book', slug: 'book-valid-1').save
-    refute Book.new(title: 'book valid 2', brief: 'a valid brief of book', slug: 'book-valid-1').valid?
-  end
-end
-```
-
-
-
-## ejecutamos los test
-
-
-
-
-## build API
-
-
-
-
-## añadimos test de la API
-
-
-## volvemos a las transparencias HEROKU
 
 
 
